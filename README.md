@@ -1,3 +1,3 @@
-# D0
+# ReadMe
 
-This is where all my wireframes are.
+This is a simple version control website focused on code that allows users to share and update files in shared projects, view other projects, add friends, collaborate, etc.
