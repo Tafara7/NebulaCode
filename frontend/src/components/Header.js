@@ -9,6 +9,7 @@ function Header() {
         <ul className="nav-links">
           <li><Link to="/Home">Home</Link></li>
           <li><Link to="/Profile">Profile</Link></li>
+          <li><Link to="/Projects">Projects</Link></li>
           <li><a href="#">About</a></li>
           <li><a href="#">Sign Up</a></li>
           <li><a href="#">Log In</a></li>

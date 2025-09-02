@@ -218,3 +218,58 @@ img {
     height: 30px;
     width: 30px;
 }
+
+/* styling for project page */
+.project-content {
+  padding: 2rem;
+}
+
+.project-header {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.star-btn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #a020f0;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.project-sections {
+  display: flex;
+  gap: 2rem;
+}
+
+.left-column {
+  flex: 1;
+}
+
+.right-column {
+  flex: 2;
+}
+
+.files,
+.messages,
+.edit-project-form,
+.file-preview {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+}
+
+.files ul,
+.messages ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.messages li {
+  margin: 0.5rem 0;
+}
