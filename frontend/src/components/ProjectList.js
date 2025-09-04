@@ -1,7 +1,7 @@
 import React from "react";
 import ProjectPreview from "./ProjectPreview";
 
-function ProjectList({ projects }) {
+const ProjectList = ({ projects }) => {
   return (
     <div className="project-list">
       <h3>User's Repositories</h3>

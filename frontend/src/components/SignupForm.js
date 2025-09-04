@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
-function LoginForm() {
-  const [form, setForm] = useState({ username: "", password: "" });
+const SignupForm = () => {
+  const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [error, setError] = useState("");
 
   function handleChange(e) {
@@ -11,33 +10,33 @@ function LoginForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!form.username || !form.password) {
+    if (!form.username || !form.email || !form.password) {
       setError("All fields required.");
       return;
     }
     setError("");
 
-    fetch("/api/signin", {
+    fetch("/api/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)
     })
       .then(res => res.json())
-      .then(data => alert("Signed in! " + JSON.stringify(data)))
-      .catch(() => setError("Sign in failed."));
+      .then(data => alert("Signed up! " + JSON.stringify(data)))
+      .catch(() => setError("Signup failed."));
   }
 
   return (
     <div className="login-container">
-      <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
       <form className="login-form" onSubmit={handleSubmit}>
-        <input name="username" type="text" placeholder="Username or email address" value={form.username} onChange={handleChange} />
+        <input name="username" type="text" placeholder="Username" value={form.username} onChange={handleChange} />
+        <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} />
         <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} />
-        <button type="submit">Sign In</button>
+        <button type="submit">Sign Up</button>
         {error && <div style={{ color: "red" }}>{error}</div>}
       </form>
     </div>
   );
 }
 
-export default LoginForm;
+export default SignupForm;

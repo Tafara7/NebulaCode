@@ -1,13 +1,15 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Project from "../components/Project";
 import Files from "../components/Files";
 import Messages from "../components/Messages";
 import EditProjectForm from "../components/EditProjectForm";
 
-function ProjectPage() {
+const ProjectPage = () => {
+  const { projectId } = useParams();
   const project = {
-    name: "NebulaSearch",
+    name: projectId || "NebulaSearch",
     owner: "Tafara7",
     collaborators: ["devAstro", "Quorg"],
     tags: ["js", "ts", "ai"],

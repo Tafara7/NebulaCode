@@ -1,6 +1,6 @@
 import React from "react";
 
-function Files({ files }) {
+const Files = ({ files}) => {
   return (
     <div className="files">
       <h3> File Viewer</h3>

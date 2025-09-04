@@ -1,6 +1,6 @@
 import React from "react";
 
-function Sidebar() {
+const Sidebar = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo"></div>

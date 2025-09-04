@@ -1,7 +1,7 @@
 import React from "react";
 import ProfilePreview from "./ProfilePreview";
 
-function FriendsList({ friends }) {
+const FriendsList = ({ friends}) => {
   return (
     <div className="friends-list">
       <h3>Friends</h3>

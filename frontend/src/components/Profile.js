@@ -1,6 +1,6 @@
 import React from "react";
 
-function Profile({ username, bio, location, joined }) {
+const Profile = ({ username, bio, location, joined}) => {
   return (
     <div className="profile">
       <div className="profile-header">

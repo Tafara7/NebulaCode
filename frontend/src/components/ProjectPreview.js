@@ -1,6 +1,6 @@
 import React from "react";
 
-function ProjectPreview({ name, description, time }) {
+const ProjectPreview = ({ name, description, time }) => {
   return (
     <div className="project-preview">
       <h4>{name}</h4>

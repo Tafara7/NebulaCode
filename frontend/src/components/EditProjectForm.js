@@ -1,6 +1,6 @@
 import React from "react";
 
-function EditProjectForm() {
+const EditProjectForm = () => {
   return (
     <div className="edit-project-form">
       <h3>Edit Project</h3>
@@ -9,8 +9,8 @@ function EditProjectForm() {
         <input type="text" placeholder="Collaborators (comma separated)" />
         <input type="text" placeholder="Tags (comma separated)" />
         <textarea placeholder="Project Description"></textarea>
-        <button type="submit">Save Changes</button>
       </form>
+      <button type="submit">Save Changes</button>
     </div>
   );
 }

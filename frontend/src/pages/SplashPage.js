@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../components/Header";
 import LoginForm from "../components/LoginForm";
 
-function SplashPage() {
+const SplashPage = () => {
   return (
     <div className="splash">
       <Header />

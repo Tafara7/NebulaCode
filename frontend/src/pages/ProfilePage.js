@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Profile from "../components/Profile";
 import EditProfileForm from "../components/EditProfileForm";
@@ -6,9 +7,10 @@ import ProjectList from "../components/ProjectList";
 import FriendsList from "../components/FriendsList";
 import CreateProject from "../components/CreateProject";
 
-function ProfilePage() {
+const ProfilePage = () => {
+  const { username } = useParams();
   const user = {
-    username: "Tafara7",
+    username: username || "Tafara7",
     bio: "Full-stack explorer of galaxies.",
     location: "South Africa",
     joined: "August 2025",

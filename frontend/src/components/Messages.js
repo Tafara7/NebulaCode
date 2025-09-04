@@ -1,6 +1,6 @@
 import React from "react";
 
-function Messages({ checkins }) {
+const Messages = ({ checkins}) => {
   return (
     <div className="messages">
       <h3> Check-In History</h3>

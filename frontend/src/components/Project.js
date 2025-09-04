@@ -1,6 +1,6 @@
 import React from "react";
 
-function Project({ name, owner, collaborators, tags }) {
+const Project = ({ name, owner, collaborators, tags }) => {
   return (
     <div className="project-header">
       <h2> Project: {name}</h2>

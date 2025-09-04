@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import Feed from "../components/Feed";
 import ProjectPreview from "../components/ProjectPreview";
 
-function HomePage() {
+const HomePage = () => {
   const recentActivity = [
     {
       name: 'Tafara pushed to "Galactic-Search"',
@@ -40,7 +40,7 @@ function HomePage() {
         <Sidebar />
 
         <main className="home-content">
-          <h2>Welcome back, [Username]!</h2>
+          <h2>Welcome back, Tafara7!</h2>
           <div className="feeds">
             <Feed title="Recent Activity / Feed:" items={recentActivity} />
             <Feed title="My Projects Feed:" items={myProjectsFeed} />

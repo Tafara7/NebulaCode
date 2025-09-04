@@ -1,6 +1,6 @@
 import React from "react";
 
-function SearchInput() {
+const SearchInput = () => {
   return (
     <div className="search-box">
       <input type="text" placeholder="Search projects or people..." />
