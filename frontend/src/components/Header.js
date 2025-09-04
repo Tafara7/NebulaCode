@@ -13,7 +13,7 @@ function Header() {
           <li><a href="#">About</a></li>
           <li><a href="#">Sign Up</a></li>
           <li><a href="#">Log In</a></li>
-          <li><a href="#"><span className="search-icon"><img src="/assets/icons/saturn.png" alt="Saturn" /></span></a></li>
+          <li><a href="#"><span className="search-icon"><img src="/assets/icons/search.png" alt="Saturn" /></span></a></li>
           <li><a href="#"><span className="profile-icon"><img src="/assets/icons/user.png" alt="User" /></span></a></li>
         </ul>
       </nav>

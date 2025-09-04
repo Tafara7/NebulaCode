@@ -4,7 +4,7 @@ function Profile({ username, bio, location, joined }) {
   return (
     <div className="profile">
       <div className="profile-header">
-        <div className="profile-avatar">👤</div>
+        <div className="profile-avatar"><img src="/assets/icons/user.png" alt="User" /></div>
         <h2>{username}</h2>
       </div>
       <p><strong>Short Bio:</strong> {bio}</p>
