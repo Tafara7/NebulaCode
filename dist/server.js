@@ -6,6 +6,12 @@ var app = express();
 var port = 3000;
 app.use(express.json());
 app.use(express["static"](path.join(__dirname, '../frontend/public')));
+var userRoutes = require('./users');
+var projectRoutes = require('./projects');
+var checkinRoutes = require('./checkins');
+app.use('/api/users', userRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/checkins', checkinRoutes);
 app.post("/api/signin", function (req, res) {
   res.json({
     success: true,

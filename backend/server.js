@@ -7,6 +7,14 @@ const port = 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend/public')));
 
+const userRoutes = require('./users');
+const projectRoutes = require('./projects');
+const checkinRoutes = require('./checkins');
+
+app.use('/api/users', userRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/checkins', checkinRoutes);
+
 app.post("/api/signin", (req, res) => {
   res.json({ success: true, user: { username: req.body.username || "demoUser" } });
 });
