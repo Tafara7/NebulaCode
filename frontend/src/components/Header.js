@@ -1,7 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = ({ username }) => {
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    localStorage.removeItem("user");
+    navigate("/login");
+  }
+
   return (
     <header className="header">
       <div className="logo">
@@ -18,6 +25,13 @@ const Header = ({ username }) => {
           <li><Link to="/login">Log In</Link></li>
           <li><Link to="#"><span className="search-icon"><img src="/assets/icons/search.png" alt="Saturn" /></span></Link></li>
           <li><Link to="#"><span className="profile-icon"><img src="/assets/icons/user.png" alt="User" /></span></Link></li>
+          {username && (
+            <li>
+              <button onClick={handleLogout} style={{ background: "none", border: "none", color: "#fff", cursor: "pointer" }}>
+                Log Out
+              </button>
+            </li>
+          )}
         </ul>
       </nav>
     </header>

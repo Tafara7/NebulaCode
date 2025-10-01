@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Project from "../components/Project";
@@ -8,28 +8,34 @@ import EditProjectForm from "../components/EditProjectForm";
 
 const ProjectPage = () => {
   const { projectId } = useParams();
-  const project = {
-    name: projectId || "NebulaSearch",
-    owner: "Tafara7",
-    collaborators: ["devAstro", "Quorg"],
-    tags: ["js", "ts", "ai"],
-  };
+  const [project, setProject] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [checkins, setCheckins] = useState([]);
 
-  const files = [
-    "/src/",
-    "- App.js",
-    "- SearchEngine.js",
-    "/assets/",
-    "- styles.css",
-    "README.md",
-    "package.json",
-  ];
+  useEffect(() => {
+    // Fetch project details
+    fetch(`/api/projects/${projectId}`)
+      .then(res => res.json())
+      .then(data => setProject(data));
 
-  const checkins = [
-    { user: "Tafara7", timeAgo: "2 hours ago", message: "Fixed syntax bug in the new search UI" },
-    { user: "devAstro", timeAgo: "1 day ago", message: "Created new component and added styles" },
-    { user: "Quorg", timeAgo: "2 days ago", message: "Merged branch orbit-refactor to main" },
-  ];
+    // Fetch files (stub: you may want to add a files API)
+    // setFiles(["/src/", "- App.js", ...]);
+
+    // Fetch check-ins
+    fetch(`/api/checkins/project/${projectId}`)
+      .then(res => res.json())
+      .then(data => {
+        setCheckins(
+          data.map(c => ({
+            user: c.userId, // You may want to resolve userId to username
+            timeAgo: new Date(c.createdAt).toLocaleString(),
+            message: c.message,
+          }))
+        );
+      });
+  }, [projectId]);
+
+  if (!project) return <div>Loading...</div>;
 
   return (
     <div className="project-page">
@@ -37,8 +43,8 @@ const ProjectPage = () => {
       <main className="project-content">
         <Project
           name={project.name}
-          owner={project.owner}
-          collaborators={project.collaborators}
+          owner={project.ownerId}
+          collaborators={project.memberIds}
           tags={project.tags}
         />
 
@@ -53,12 +59,12 @@ const ProjectPage = () => {
             <div className="file-preview">
               [This is where the file preview goes]
             </div>
-            <EditProjectForm />
+            <EditProjectForm project={project} setProject={setProject} />
           </div>
         </section>
       </main>
     </div>
   );
-}
+};
 
 export default ProjectPage;

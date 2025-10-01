@@ -16,13 +16,20 @@ const SignupForm = () => {
     }
     setError("");
 
-    fetch("/api/signup", {
+    fetch("/api/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)
     })
       .then(res => res.json())
-      .then(data => alert("Signed up! " + JSON.stringify(data)))
+      .then(data => {
+        if (data._id) {
+          localStorage.setItem("user", JSON.stringify(data));
+          window.location.href = "/Home";
+        } else {
+          setError("Signup failed.");
+        }
+      })
       .catch(() => setError("Signup failed."));
   }
 

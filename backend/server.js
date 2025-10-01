@@ -1,5 +1,7 @@
 const express = require("express");
 const path = require("path");
+const bcrypt = require("bcrypt");
+const { connectDB } = require("./db");
 
 const app = express();
 const port = 3000;
@@ -15,12 +17,21 @@ app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/checkins', checkinRoutes);
 
-app.post("/api/signin", (req, res) => {
-  res.json({ success: true, user: { username: req.body.username || "demoUser" } });
+
+app.post("/api/signin", async (req, res) => {
+  const db = await connectDB();
+  const { email, password } = req.body;
+  const user = await db.collection('users').findOne({ email });
+  if (!user) return res.json({ success: false, message: "User not found" });
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) return res.json({ success: false, message: "Incorrect password" });
+
+  const { password: pw, ...userNoPw } = user;
+  res.json({ success: true, user: userNoPw });
 });
 
-app.post("/api/signup", (req, res) => {
-  res.json({ success: true, user: { username: req.body.username || "newUser" } });
+app.post("/api/signup", async (req, res) => {
+  res.status(404).json({ error: "Use /api/users for signup" });
 });
 
 app.get(/.*/, (req, res) => {

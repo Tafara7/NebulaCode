@@ -1,7 +1,15 @@
 import React from "react";
 import ProfilePreview from "./ProfilePreview";
 
-const FriendsList = ({ friends}) => {
+const FriendsList = ({ friends }) => {
+  if (!friends || friends.length === 0) {
+    return (
+      <div className="friends-list">
+        <h3>Friends</h3>
+        <p>No friends yet.</p>
+      </div>
+    );
+  }
   return (
     <div className="friends-list">
       <h3>Friends</h3>
@@ -10,6 +18,6 @@ const FriendsList = ({ friends}) => {
       ))}
     </div>
   );
-}
+};
 
 export default FriendsList;

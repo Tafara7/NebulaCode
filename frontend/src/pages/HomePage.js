@@ -1,46 +1,66 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Feed from "../components/Feed";
 import ProjectPreview from "../components/ProjectPreview";
 
 const HomePage = () => {
-  const recentActivity = [
-    {
-      name: 'Tafara pushed to "Galactic-Search"',
-      description: "3 commits added: Bug fix, Readme update",
-      time: "2 hours ago",
-    },
-    {
-      name: 'James pushed to "Saturn-Repo"',
-      description: "3 commits added: Bug fix, Readme update",
-      time: "4 hours ago",
-    },
-  ];
+  const [user, setUser] = useState(null);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [myProjectsFeed, setMyProjectsFeed] = useState([]);
+  const [yourProjects, setYourProjects] = useState([]);
 
-  const myProjectsFeed = [
-    {
-      name: "GalaxyForm",
-      description: "Integrated API caching for faster search results",
-      time: "Yesterday",
-    },
-    {
-      name: "GymApp",
-      description: "Cleaned code and improved form validation",
-      time: "Yesterday",
-    },
-  ];
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      setUser(JSON.parse(stored));
+    }
+  }, []);
 
-  const yourProjects = ["GalaxyForm", "GymApp", "AstroCalc"];
+  useEffect(() => {
+    if (!user) return;
+
+    fetch("/api/checkins/project/all")
+      .then(res => res.json())
+      .then(data => {
+
+        setRecentActivity(
+          data.map(c => ({
+            name: `${c.username || c.userId} pushed to "${c.projectName || c.projectId}"`,
+            description: c.message,
+            time: new Date(c.createdAt).toLocaleString(),
+          }))
+        );
+      });
+
+
+      fetch(`/api/projects`)
+      .then(res => res.json())
+      .then(projects => {
+        const myProjects = projects.filter(
+          p => p.ownerId === user._id || (p.memberIds && p.memberIds.includes(user._id))
+        );
+        setMyProjectsFeed(
+          myProjects.map(p => ({
+            name: p.name,
+            description: p.description,
+            time: new Date(p.createdAt).toLocaleDateString(),
+          }))
+        );
+        setYourProjects(myProjects.map(p => p.name));
+      });
+  }, [user]);
 
   return (
     <div className="home-page">
-      <Header />
+      <Header username={user ? user.username : ""} />
       <div className="home-layout">
         <Sidebar />
 
         <main className="home-content">
-          <h2>Welcome back, Tafara7!</h2>
+          <h2>
+            {user ? `Welcome back, ${user.username}!` : "Welcome to NebulaCode!"}
+          </h2>
           <div className="feeds">
             <Feed title="Recent Activity / Feed:" items={recentActivity} />
             <Feed title="My Projects Feed:" items={myProjectsFeed} />
@@ -60,6 +80,6 @@ const HomePage = () => {
       </div>
     </div>
   );
-}
+};
 
 export default HomePage;
