@@ -27,5 +27,11 @@ Thumbs.db
 .idea/
 *.swp
 
+# frontend
+/frontend/public/bundle.js
+
+# backend
+/backend/db.js
+.env
 # --- Misc ---
 coverage/

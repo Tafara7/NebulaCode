@@ -5,6 +5,16 @@ const { connectDB, ObjectId } = require('./db');
 
 router.get('/', async (req, res) => {
   const db = await connectDB();
+  const { search } = req.query;
+  if (search) {
+    const users = await db.collection('users').find({
+      $or: [
+        { username: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ]
+    }, { projection: { password: 0 } }).toArray();
+    return res.json(users);
+  }
   const users = await db.collection('users').find({}, { projection: { password: 0 } }).toArray();
   res.json(users);
 });

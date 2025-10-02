@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import SearchModal from "./SearchModal";
 
 const Header = ({ username }) => {
   const navigate = useNavigate();
+  const [showSearch, setShowSearch] = useState(false);
 
   function handleLogout() {
     localStorage.removeItem("user");
@@ -23,7 +25,16 @@ const Header = ({ username }) => {
           <li><Link to="/about">About</Link></li>
           <li><Link to="/signup">Sign Up</Link></li>
           <li><Link to="/login">Log In</Link></li>
-          <li><Link to="#"><span className="search-icon"><img src="/assets/icons/search.png" alt="Saturn" /></span></Link></li>
+          <li>
+            <button
+              className="search-icon-btn"
+              style={{ background: "none", border: "none", cursor: "pointer" }}
+              onClick={() => setShowSearch(true)}
+              title="Search"
+            >
+              <img src="/assets/icons/search.png" alt="Search" />
+            </button>
+          </li>
           <li><Link to="#"><span className="profile-icon"><img src="/assets/icons/user.png" alt="User" /></span></Link></li>
           {username && (
             <li>
@@ -34,6 +45,7 @@ const Header = ({ username }) => {
           )}
         </ul>
       </nav>
+      {showSearch && <SearchModal onClose={() => setShowSearch(false)} />}
     </header>
   );
 }

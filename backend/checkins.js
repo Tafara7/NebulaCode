@@ -65,4 +65,39 @@ router.delete('/:id', async (req, res) => {
   res.json({ success: true });
 });
 
+router.get('/search', async (req, res) => {
+  const db = await connectDB();
+  const { query } = req.query;
+  const checkins = await db.collection('checkins').aggregate([
+    {
+      $match: {
+        $or: [
+          { message: { $regex: query, $options: 'i' } }
+        ]
+      }
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
+        as: 'user'
+      }
+    },
+    {
+      $unwind: { path: "$user", preserveNullAndEmptyArrays: true }
+    },
+    {
+      $project: {
+        _id: 1,
+        message: 1,
+        createdAt: 1,
+        userId: 1,
+        username: "$user.username"
+      }
+    }
+  ]).toArray();
+  res.json(checkins);
+});
+
 module.exports = router;

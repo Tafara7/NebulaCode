@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const CreateProject = ({ ownerId }) => {
+const CreateProject = ({ ownerId, onProjectCreated }) => {
   const [form, setForm] = useState({ name: "", description: "" });
   const [error, setError] = useState("");
 
@@ -26,15 +26,18 @@ const CreateProject = ({ ownerId }) => {
         createdAt: new Date().toISOString(),
       }),
     })
-      .then(res => res.json())
-      .then(() => window.location.reload())
-      .catch(() => setError("Failed to create project."));
+    .then(res => res.json())
+    .then((createdProject) => {
+      if (onProjectCreated) onProjectCreated(createdProject);
+      setForm({ name: "", description: "" });
+      setError("");
+    })
   }
 
   return (
     <div className="create-project">
       <h3>Create a New Project</h3>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <input
           name="name"
           type="text"
@@ -48,7 +51,7 @@ const CreateProject = ({ ownerId }) => {
           value={form.description}
           onChange={handleChange}
         ></textarea>
-        <button type="submit">Create</button>
+        <button type="submit" style={{ marginTop: "1.2rem" }}>Create</button>
         {error && <div style={{ color: "red" }}>{error}</div>}
       </form>
     </div>
