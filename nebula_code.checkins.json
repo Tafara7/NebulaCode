@@ -1,0 +1,52 @@
+[{
+  "_id": {
+    "$oid": "852f1a1a1a1a1a1a1a1a1a31"
+  },
+  "projectId": {
+    "$oid": "752f1a1a1a1a1a1a1a1a1a21"
+  },
+  "userId": {
+    "$oid": "652f1a1a1a1a1a1a1a1a1a11"
+  },
+  "message": "Initial commit",
+  "createdAt": "2025-09-02"
+},
+{
+  "_id": {
+    "$oid": "852f1a1a1a1a1a1a1a1a1a32"
+  },
+  "projectId": {
+    "$oid": "752f1a1a1a1a1a1a1a1a1a21"
+  },
+  "userId": {
+    "$oid": "652f1a1a1a1a1a1a1a1a1a12"
+  },
+  "message": "Added search feature",
+  "createdAt": "2025-09-03"
+},
+{
+  "_id": {
+    "$oid": "852f1a1a1a1a1a1a1a1a1a33"
+  },
+  "projectId": {
+    "$oid": "752f1a1a1a1a1a1a1a1a1a22"
+  },
+  "userId": {
+    "$oid": "652f1a1a1a1a1a1a1a1a1a13"
+  },
+  "message": "Setup project structure",
+  "createdAt": "2025-09-04"
+},
+{
+  "_id": {
+    "$oid": "690235ed99f6eb5765ea6b2c"
+  },
+  "projectId": {
+    "$oid": "6902355a99f6eb5765ea6b2b"
+  },
+  "userId": {
+    "$oid": "69023228d8afae8662fb8c20"
+  },
+  "message": "checking in",
+  "createdAt": "2025-10-29T15:42:37.937Z"
+}]
