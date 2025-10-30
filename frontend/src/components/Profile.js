@@ -1,19 +1,30 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const Profile = ({ username, bio, location, joined }) => {
+const randomPlaceholders = [
+  "/assets/images/placeholder1.jpg",
+  "/assets/images/placeholder2.jpg",
+  "/assets/images/placeholder3.jpg",
+  "/assets/images/placeholder4.jpg"
+];
+
+const Profile = ({ username, bio, location, joined, profileImage, isClickable = true }) => {
   const navigate = useNavigate();
 
   function handleProfileClick() {
-    navigate(`/profile/${username}`);
+    if (isClickable) navigate(`/profile/${username}`);
   }
+
+  const src = profileImage || randomPlaceholders[Math.floor(Math.random() * randomPlaceholders.length)];
 
   return (
     <div className="profile">
       <div className="profile-header">
-        <div className="profile-avatar"><img src="/assets/icons/user.png" alt="User" /></div>
+        <div className="profile-avatar" style={{ cursor: isClickable ? "pointer" : "default" }}>
+          <img src={src} alt={`${username} avatar`} style={{ width: 120, height: 120, borderRadius: 8 }} onClick={handleProfileClick} />
+        </div>
         <h2
-          style={{ cursor: "pointer", color: "#a020f0", textDecoration: "underline" }}
+          style={{ cursor: isClickable ? "pointer" : "default", color: "#a020f0", textDecoration: isClickable ? "underline" : "none" }}
           onClick={handleProfileClick}
           title="View profile"
         >

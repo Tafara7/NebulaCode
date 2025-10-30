@@ -5,7 +5,6 @@ const { connectDB, ObjectId } = require('./db');
 router.get('/project/:projectId', async (req, res) => {
   const db = await connectDB();
   if (req.params.projectId === "all") {
-
     const checkins = await db.collection('checkins').aggregate([
       {
         $lookup: {
@@ -41,11 +40,25 @@ router.get('/project/:projectId', async (req, res) => {
         }
       }
     ]).toArray();
-    res.json(checkins);
+
+    const normalized = checkins.map(c => ({
+      ...c,
+      _id: c._id ? c._id.toString() : null,
+      userId: c.userId ? (c.userId.toString ? c.userId.toString() : String(c.userId)) : null,
+      projectId: c.projectId ? (c.projectId.toString ? c.projectId.toString() : String(c.projectId)) : null
+    }));
+
+    res.json(normalized);
   } else {
     try {
-      const checkins = await db.collection('checkins').find({ projectId: new ObjectId(req.params.projectId) }).toArray();
-      res.json(checkins);
+      const raw = await db.collection('checkins').find({ projectId: new ObjectId(req.params.projectId) }).toArray();
+      const normalized = raw.map(c => ({
+        ...c,
+        _id: c._id ? c._id.toString() : null,
+        userId: c.userId ? (c.userId.toString ? c.userId.toString() : String(c.userId)) : null,
+        projectId: c.projectId ? (c.projectId.toString ? c.projectId.toString() : String(c.projectId)) : null
+      }));
+      res.json(normalized);
     } catch (err) {
       res.status(400).json({ error: "Invalid projectId" });
     }
@@ -56,7 +69,13 @@ router.post('/', async (req, res) => {
   const db = await connectDB();
   const { projectId, userId, message, createdAt } = req.body;
   const result = await db.collection('checkins').insertOne({ projectId: new ObjectId(projectId), userId: new ObjectId(userId), message, createdAt });
-  res.json(result.ops ? result.ops[0] : result);
+  const inserted = await db.collection('checkins').findOne({ _id: result.insertedId });
+  res.json({
+    ...inserted,
+    _id: inserted._id.toString(),
+    projectId: inserted.projectId.toString(),
+    userId: inserted.userId.toString()
+  });
 });
 
 router.delete('/:id', async (req, res) => {
@@ -97,7 +116,14 @@ router.get('/search', async (req, res) => {
       }
     }
   ]).toArray();
-  res.json(checkins);
+
+  const normalized = checkins.map(c => ({
+    ...c,
+    _id: c._id ? c._id.toString() : null,
+    userId: c.userId ? (c.userId.toString ? c.userId.toString() : String(c.userId)) : null
+  }));
+
+  res.json(normalized);
 });
 
 module.exports = router;

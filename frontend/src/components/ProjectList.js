@@ -1,8 +1,9 @@
 import React from "react";
 import ProjectPreview from "./ProjectPreview";
 
-const ProjectList = ({ projects, onProjectClick }) => {
-  const loggedIn = JSON.parse(localStorage.getItem("user"));
+const ProjectList = ({ projects, onProjectClick, onProjectDeleted }) => {
+  const stored = localStorage.getItem("user");
+  const loggedIn = stored ? JSON.parse(stored) : null;
 
   function handleDeleteProject(projectId) {
     if (!window.confirm("Delete this project?")) return;
@@ -27,7 +28,7 @@ const ProjectList = ({ projects, onProjectClick }) => {
       <h3>User's Repositories</h3>
       {projects.map((proj, index) => (
         <div
-          key={index}
+          key={proj._id || index}
           className="project-list-card"
           style={{ cursor: onProjectClick ? "pointer" : "default" }}
           onClick={onProjectClick ? () => onProjectClick(proj._id) : undefined}
@@ -36,8 +37,11 @@ const ProjectList = ({ projects, onProjectClick }) => {
             name={proj.name}
             description={proj.description}
             time={`Tags: ${proj.tags ? proj.tags.join(", ") : ""}`}
+            tags={proj.tags}
+            image={proj.image}
+            onTagClick={() => {}}
           />
-          {loggedIn && proj.ownerId === loggedIn._id && (
+          {loggedIn && String(proj.ownerId) === String(loggedIn._id) && (
             <button
               className="project-delete-btn"
               onClick={e => {

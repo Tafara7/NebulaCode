@@ -17,7 +17,6 @@ app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/checkins', checkinRoutes);
 
-
 app.post("/api/signin", async (req, res) => {
   const db = await connectDB();
   const { email, password } = req.body;
@@ -26,8 +25,15 @@ app.post("/api/signin", async (req, res) => {
   const match = await bcrypt.compare(password, user.password);
   if (!match) return res.json({ success: false, message: "Incorrect password" });
 
-  const { password: pw, ...userNoPw } = user;
-  res.json({ success: true, user: userNoPw });
+  const { password: pw, ...rest } = user;
+  const normalizedUser = {
+    ...rest,
+    _id: user._id ? user._id.toString() : null,
+    friends: Array.isArray(user.friends) ? user.friends.map(id => id ? id.toString() : id) : [],
+    savedProjects: Array.isArray(user.savedProjects) ? user.savedProjects.map(id => id ? id.toString() : id) : [],
+    profileImage: user.profileImage || null
+  };
+  res.json({ success: true, user: normalizedUser });
 });
 
 app.post("/api/signup", async (req, res) => {

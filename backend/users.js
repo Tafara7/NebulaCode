@@ -1,58 +1,91 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
+const express = require("express");
 const router = express.Router();
-const { connectDB, ObjectId } = require('./db');
+const bcrypt = require("bcrypt");
+const { connectDB, ObjectId } = require("./db");
 
-router.get('/', async (req, res) => {
+function normalizeUser(u) {
+  if (!u) return null;
+  const { password, ...rest } = u;
+  return {
+    ...rest,
+    _id: u._id ? u._id.toString() : null,
+    friends: Array.isArray(u.friends) ? u.friends.map(id => id ? id.toString() : id) : [],
+    savedProjects: Array.isArray(u.savedProjects) ? u.savedProjects.map(id => id ? id.toString() : id) : [],
+  };
+}
+
+router.get("/", async (req, res) => {
   const db = await connectDB();
-  const { search } = req.query;
-  if (search) {
-    const users = await db.collection('users').find({
-      $or: [
-        { username: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } }
-      ]
-    }, { projection: { password: 0 } }).toArray();
-    return res.json(users);
+  const users = await db.collection("users").find().toArray();
+  const safe = users.map(normalizeUser);
+  res.json(safe);
+});
+
+router.get("/:id", async (req, res) => {
+  const db = await connectDB();
+  try {
+    const user = await db.collection("users").findOne({ _id: new ObjectId(req.params.id) });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(normalizeUser(user));
+  } catch (err) {
+    res.status(400).json({ error: "Invalid id" });
   }
-  const users = await db.collection('users').find({}, { projection: { password: 0 } }).toArray();
-  res.json(users);
 });
 
-router.get('/:id', async (req, res) => {
+router.post("/", async (req, res) => {
   const db = await connectDB();
-  const user = await db.collection('users').findOne({ _id: new ObjectId(req.params.id) }, { projection: { password: 0 } });
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  res.json(user);
+  const { username, email, password, bio = "", role = "user" } = req.body;
+  if (!username || !email || !password) return res.status(400).json({ error: "username, email and password required" });
+  const existing = await db.collection("users").findOne({ $or: [{ username }, { email }] });
+  if (existing) return res.status(400).json({ error: "User already exists" });
+  const hashed = await bcrypt.hash(password, 10);
+  const doc = {
+    username,
+    email,
+    password: hashed,
+    bio,
+    friends: [],
+    savedProjects: [],
+    createdAt: new Date().toISOString(),
+    role: role || "user",
+    profileImage: null,
+  };
+  const r = await db.collection("users").insertOne(doc);
+  const created = await db.collection("users").findOne({ _id: r.insertedId });
+  res.json(normalizeUser(created));
 });
 
-router.post('/', async (req, res) => {
-  const db = await connectDB();
-  const { username, email, password, bio, location, joined } = req.body;
-  if (!password) return res.status(400).json({ error: "Password required" });
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const result = await db.collection('users').insertOne({
-    username, email, password: hashedPassword, bio, location, joined, friends: []
-  });
-
-  const user = await db.collection('users').findOne({ _id: result.insertedId }, { projection: { password: 0 } });
-  res.json(user);
-});
-
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req, res) => {
   const db = await connectDB();
   const update = { ...req.body };
-  if (update.password) {
-    update.password = await bcrypt.hash(update.password, 10);
+  try {
+    if (update.password) {
+      update.password = await bcrypt.hash(update.password, 10);
+    }
+    if (Array.isArray(update.friends)) {
+      update.friends = update.friends.map(id => id);
+    }
+    if (Array.isArray(update.savedProjects)) {
+      update.savedProjects = update.savedProjects.map(id => id);
+    }
+    delete update._id;
+    await db.collection("users").updateOne({ _id: new ObjectId(req.params.id) }, { $set: update }, { upsert: false });
+    const user = await db.collection("users").findOne({ _id: new ObjectId(req.params.id) });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(normalizeUser(user));
+  } catch (err) {
+    res.status(400).json({ error: "Invalid request" });
   }
-  await db.collection('users').updateOne({ _id: new ObjectId(req.params.id) }, { $set: update });
-  res.json({ success: true });
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
   const db = await connectDB();
-  await db.collection('users').deleteOne({ _id: new ObjectId(req.params.id) });
-  res.json({ success: true });
+  try {
+    await db.collection("users").deleteOne({ _id: new ObjectId(req.params.id) });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(400).json({ error: "Invalid id" });
+  }
 });
 
 module.exports = router;

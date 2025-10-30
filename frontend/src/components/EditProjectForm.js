@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const EditProjectForm = ({ project, setProject, setToast }) => {
+const EditProjectForm = ({ project, setProject, setToast, isAdmin = false, isOwner = false }) => {
   const [form, setForm] = useState(project || {});
   const [error, setError] = useState("");
 
@@ -16,24 +16,29 @@ const EditProjectForm = ({ project, setProject, setToast }) => {
     setForm({ ...form, tags: e.target.value.split(",").map(t => t.trim()) });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (!form.name) {
       setError("Project name required.");
       return;
     }
+    if (!(isOwner || isAdmin)) {
+      setError("Only project owner or admin can edit this project.");
+      return;
+    }
     setError("");
-    fetch(`/api/projects/${project._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    })
-      .then(res => res.json())
-      .then(() => {
-        setProject(form);
-        if (setToast) setToast({ type: "success", message: "Project updated!" });
-      })
-      .catch(() => setError("Update failed."));
+    try {
+      const res = await fetch(`/api/projects/${project._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const updated = await res.json();
+      setProject(updated);
+      if (setToast) setToast({ type: "success", message: "Project updated!" });
+    } catch {
+      setError("Update failed.");
+    }
   }
 
   return (
@@ -46,6 +51,7 @@ const EditProjectForm = ({ project, setProject, setToast }) => {
           placeholder="Project Name"
           value={form.name || ""}
           onChange={handleChange}
+          disabled={!(isOwner || isAdmin)}
         />
         <input
           name="tags"
@@ -53,14 +59,16 @@ const EditProjectForm = ({ project, setProject, setToast }) => {
           placeholder="Tags (comma separated)"
           value={form.tags ? form.tags.join(", ") : ""}
           onChange={handleTagsChange}
+          disabled={!(isOwner || isAdmin)}
         />
         <textarea
           name="description"
           placeholder="Project Description"
           value={form.description || ""}
           onChange={handleChange}
+          disabled={!(isOwner || isAdmin)}
         ></textarea>
-        <button type="submit" style={{ marginTop: "1.2rem" }}>Save Changes</button>
+        <button type="submit" style={{ marginTop: "1.2rem" }} disabled={!(isOwner || isAdmin)}>Save Changes</button>
         {error && <div style={{ color: "red" }}>{error}</div>}
       </form>
     </div>

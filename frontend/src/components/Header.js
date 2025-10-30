@@ -14,7 +14,7 @@ const Header = ({ username }) => {
   return (
     <header className="header">
       <div className="logo">
-        <img src="/assets/icons/saturn.png" alt="Saturn" /> NebulaCode
+        <img src="/assets/icons/saturn.png" alt="Saturn" /> <Link to="/Home" style={{textDecoration: "none", color: "inherit"  }}>NebulaCode</Link>
         {username && <span style={{ marginLeft: "1rem" }}>Welcome, {username}!</span>}
       </div>
       <nav>
@@ -22,7 +22,6 @@ const Header = ({ username }) => {
           <li><Link to="/Home">Home</Link></li>
           <li><Link to={`/profile/${username || "Profile"}`}>Profile</Link></li>
           <li><Link to="/Projects">Projects</Link></li>
-          <li><Link to="/about">About</Link></li>
           <li><Link to="/signup">Sign Up</Link></li>
           <li><Link to="/login">Log In</Link></li>
           <li>

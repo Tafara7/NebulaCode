@@ -39,7 +39,6 @@ const SearchModal = ({ onClose }) => {
       navigate(`/Projects/${result._id}`);
       onClose();
     } else if (result.type === "checkin") {
-      // Go to project page for check-in
       navigate(`/Projects/${result.projectId || ""}`);
       onClose();
     }

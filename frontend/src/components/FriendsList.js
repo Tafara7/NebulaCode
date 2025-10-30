@@ -12,7 +12,6 @@ const FriendsList = ({ friends, onUnfriend }) => {
   if (!friends || friends.length === 0) {
     return (
       <div className="friends-list">
-        <h3>Friends</h3>
         <p>No friends yet.</p>
       </div>
     );
