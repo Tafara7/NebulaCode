@@ -1,7 +1,15 @@
 import React from "react";
 import ProjectPreview from "./ProjectPreview";
 
-function Feed({ title, items }) {
+const Feed = ({ title, items }) => {
+  if (!items || items.length === 0) {
+    return (
+      <div className="feed">
+        <h3>{title}</h3>
+        <p>No activity yet.</p>
+      </div>
+    );
+  }
   return (
     <div className="feed">
       <h3>{title}</h3>
@@ -15,6 +23,6 @@ function Feed({ title, items }) {
       ))}
     </div>
   );
-}
+};
 
 export default Feed;
